@@ -43,19 +43,23 @@ export default async function Home() {
       <header className="border-b border-border bg-surface">
         <nav
           aria-label="Primary navigation"
-          className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8"
+          className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-4 sm:gap-4 sm:px-6 lg:px-8"
         >
           <Link
             href="/"
+            aria-label="Splitly home"
             className="inline-flex items-center gap-3 text-card-heading focus-visible:rounded-control focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
-            <span className="flex size-10 items-center justify-center rounded-control bg-primary text-label text-white">
+            <span
+              className="flex size-10 items-center justify-center rounded-control bg-primary text-label text-white"
+              aria-hidden="true"
+            >
               S
             </span>
-            <span>Splitly</span>
+            <span className="hidden sm:inline">Splitly</span>
           </Link>
 
-          <div className={`grid gap-3 sm:flex sm:items-center ${user ? "grid-cols-1" : "grid-cols-2"}`}>
+          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
             {sessionAction}
             {!user ? <Button href="/signup">Get Started</Button> : null}
           </div>
