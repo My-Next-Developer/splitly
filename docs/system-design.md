@@ -900,6 +900,10 @@ NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 ```
 
+Server-side Supabase utilities may also read `NEXT_SUPABASE_URL` and
+`NEXT_SUPABASE_PUBLISHABLE_KEY` for compatibility, but browser code must use
+the `NEXT_PUBLIC_` names.
+
 Privileged Supabase credentials, if ever required for server-only operations, must be stored only as server-side environment variables and never exposed to client code.
 
 ---
