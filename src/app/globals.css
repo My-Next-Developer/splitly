@@ -9,9 +9,9 @@
   --foreground: #0f172a;
   --foreground-muted: #64748b;
   --border: #e2e8f0;
-  --brand: #4f46e5;
-  --brand-hover: #4338ca;
-  --brand-subtle: #eef2ff;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-subtle: #dbeafe;
   --success: #15803d;
   --success-subtle: #f0fdf4;
   --warning: #b45309;
@@ -28,9 +28,9 @@
     --foreground: #f8fafc;
     --foreground-muted: #94a3b8;
     --border: #334155;
-    --brand: #818cf8;
-    --brand-hover: #a5b4fc;
-    --brand-subtle: #1e1b4b;
+    --primary: #60a5fa;
+    --primary-hover: #93c5fd;
+    --primary-subtle: #172554;
     --success: #4ade80;
     --success-subtle: #052e16;
     --warning: #fbbf24;
@@ -43,7 +43,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5rem;
 }
