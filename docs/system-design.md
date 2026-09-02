@@ -896,8 +896,8 @@ Environment variables must be configured separately for local development and Ve
 Required public variables:
 
 ```text
-NEXT_PUBLIC_SUPABASE_URL
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+NEXT_SUPABASE_URL
+NEXT_SUPABASE_PUBLISHABLE_KEY
 ```
 
 Privileged Supabase credentials, if ever required for server-only operations, must be stored only as server-side environment variables and never exposed to client code.
