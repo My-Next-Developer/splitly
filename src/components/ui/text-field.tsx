@@ -36,7 +36,7 @@ export function TextField({
         aria-describedby={describedBy || undefined}
         aria-invalid={error ? "true" : undefined}
         className={[
-          "min-h-12 w-full rounded-control border bg-surface px-3 py-2 text-body text-foreground outline-none transition-colors placeholder:text-foreground-muted focus:border-primary focus:ring-2 focus:ring-primary-subtle",
+          "min-h-12 w-full max-w-full rounded-control border bg-surface px-3 py-2 text-body text-foreground outline-none transition-colors placeholder:text-foreground-muted focus:border-primary focus:ring-2 focus:ring-primary-subtle",
           error ? "border-danger" : "border-border",
           className,
         ]
