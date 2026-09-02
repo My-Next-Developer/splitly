@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useMemo, useState } from "react";
+import type { AuthError } from "@supabase/supabase-js";
+import { type FormEvent, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { FormMessage } from "@/components/ui/form-message";
 import { TextField } from "@/components/ui/text-field";
+import { ensureUserProfile } from "@/lib/auth/profiles";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import {
   SIGNUP_PASSWORD_MIN_LENGTH,
@@ -31,19 +34,31 @@ type FormMessage = {
   text: string;
 };
 
-function getFriendlySignupError(message: string) {
-  const lowerMessage = message.toLowerCase();
+function getFriendlySignupError(error: AuthError) {
+  const lowerMessage = error.message.toLowerCase();
+
+  if (error.code === "email_address_invalid") {
+    return "Please enter a valid email address.";
+  }
 
   if (lowerMessage.includes("already registered")) {
     return "An account already exists for this email. Log in instead.";
   }
 
-  if (lowerMessage.includes("password")) {
-    return "Your password does not meet the signup requirements.";
+  if (error.code === "over_email_send_rate_limit") {
+    return "Too many confirmation emails were requested. Please wait a moment, then try again.";
   }
 
-  if (lowerMessage.includes("email")) {
-    return "Please enter a valid email address.";
+  if (error.code === "email_exists" || error.code === "user_already_exists") {
+    return "An account already exists for this email. Log in instead.";
+  }
+
+  if (error.code === "email_provider_disabled") {
+    return "Email signup is not enabled for this project.";
+  }
+
+  if (lowerMessage.includes("password")) {
+    return "Your password does not meet the signup requirements.";
   }
 
   return "We could not create your account. Please try again.";
@@ -94,6 +109,7 @@ export function SignupForm() {
         email,
         password: formState.password,
         options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
           data: {
             full_name: fullName,
           },
@@ -101,9 +117,14 @@ export function SignupForm() {
       });
 
       if (error) {
+        console.error("Supabase signup failed", {
+          code: error.code,
+          message: error.message,
+          status: error.status,
+        });
         setFormMessage({
           tone: "error",
-          text: getFriendlySignupError(error.message),
+          text: getFriendlySignupError(error),
         });
         return;
       }
@@ -118,14 +139,7 @@ export function SignupForm() {
       }
 
       if (data.user && data.session) {
-        const { error: profileError } = await supabase.from("profiles").upsert(
-          {
-            id: data.user.id,
-            full_name: fullName,
-            email,
-          },
-          { onConflict: "id" },
-        );
+        const { error: profileError } = await ensureUserProfile(supabase, data.user, fullName);
 
         if (profileError) {
           setFormMessage({
@@ -151,17 +165,7 @@ export function SignupForm() {
   return (
     <form className="space-y-6" onSubmit={handleSubmit} noValidate>
       {formMessage ? (
-        <div
-          className={[
-            "rounded-control border px-4 py-3 text-secondary",
-            formMessage.tone === "success"
-              ? "border-success bg-success-subtle text-success"
-              : "border-danger bg-danger-subtle text-danger",
-          ].join(" ")}
-          role={formMessage.tone === "error" ? "alert" : "status"}
-        >
-          {formMessage.text}
-        </div>
+        <FormMessage tone={formMessage.tone}>{formMessage.text}</FormMessage>
       ) : null}
 
       <TextField
