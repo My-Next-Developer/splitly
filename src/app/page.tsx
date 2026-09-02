@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const steps = [
   {
@@ -21,7 +22,22 @@ const steps = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const sessionAction = user ? (
+    <Button href="/dashboard" variant="secondary">
+      Dashboard
+    </Button>
+  ) : (
+    <Button href="/login" variant="secondary">
+      Login
+    </Button>
+  );
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border bg-surface">
@@ -39,13 +55,9 @@ export default function Home() {
             <span>Splitly</span>
           </Link>
 
-          <div className="grid grid-cols-2 gap-3 sm:flex sm:items-center">
-            <Button href="/login" variant="secondary">
-              Login
-            </Button>
-            <Button href="/signup">
-              Get Started
-            </Button>
+          <div className={`grid gap-3 sm:flex sm:items-center ${user ? "grid-cols-1" : "grid-cols-2"}`}>
+            {sessionAction}
+            {!user ? <Button href="/signup">Get Started</Button> : null}
           </div>
         </nav>
       </header>
@@ -61,11 +73,9 @@ export default function Home() {
               Track shared expenses and know exactly who owes whom.
             </p>
 
-            <div className="mt-8 grid gap-3 sm:inline-grid sm:grid-cols-2">
-              <Button href="/signup">Get Started</Button>
-              <Button href="/login" variant="secondary">
-                Login
-              </Button>
+            <div className={`mt-8 grid gap-3 sm:inline-grid ${user ? "sm:grid-cols-1" : "sm:grid-cols-2"}`}>
+              {!user ? <Button href="/signup">Get Started</Button> : null}
+              {sessionAction}
             </div>
           </div>
 
