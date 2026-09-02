@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { ensureUserProfile } from "@/lib/auth/profiles";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
@@ -8,6 +9,15 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser();
 
   if (!user) redirect("/login?redirectTo=/dashboard");
+
+  const { error: profileError } = await ensureUserProfile(supabase, user);
+
+  if (profileError) {
+    console.warn("Supabase profile setup failed on dashboard", {
+      code: profileError.code,
+      message: profileError.message,
+    });
+  }
 
   return (
     <main className="min-h-screen bg-background px-4 py-12 sm:px-6 lg:px-8">

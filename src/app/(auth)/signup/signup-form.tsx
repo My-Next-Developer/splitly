@@ -142,11 +142,10 @@ export function SignupForm() {
         const { error: profileError } = await ensureUserProfile(supabase, data.user, fullName);
 
         if (profileError) {
-          setFormMessage({
-            tone: "error",
-            text: "Your account was created, but we could not finish your profile setup. Please log in and try again.",
+          console.warn("Supabase profile setup failed after signup", {
+            code: profileError.code,
+            message: profileError.message,
           });
-          return;
         }
       }
 

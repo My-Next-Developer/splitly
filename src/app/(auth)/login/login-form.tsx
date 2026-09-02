@@ -37,8 +37,10 @@ export function LoginForm({ redirectTo, initialMessage }: LoginFormProps) {
       }
       const { error: profileError } = await ensureUserProfile(supabase, data.user);
       if (profileError) {
-        setError("You are logged in, but we could not finish your profile setup. Please try again.");
-        return;
+        console.warn("Supabase profile setup failed after login", {
+          code: profileError.code,
+          message: profileError.message,
+        });
       }
       router.replace(redirectTo);
       router.refresh();

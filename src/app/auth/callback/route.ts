@@ -20,9 +20,10 @@ export async function GET(request: NextRequest) {
       if (user) {
         const { error: profileError } = await ensureUserProfile(supabase, user);
         if (profileError) {
-          const loginUrl = new URL("/login", request.url);
-          loginUrl.searchParams.set("message", "Your account was confirmed, but profile setup could not be completed.");
-          return NextResponse.redirect(loginUrl);
+          console.warn("Supabase profile setup failed after confirmation", {
+            code: profileError.code,
+            message: profileError.message,
+          });
         }
       }
 
